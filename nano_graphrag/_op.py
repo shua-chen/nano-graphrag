@@ -1081,6 +1081,8 @@ Importance Score: {dp['score']}
     )
     return response
 
+# async def global_mp_query():
+
 
 async def naive_query(
     query,
