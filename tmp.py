@@ -1,6 +1,7 @@
 import os
 import logging
 import numpy as np
+import yaml
 from openai import AsyncOpenAI,APIConnectionError, RateLimitError
 from nano_graphrag import GraphRAG, QueryParam
 from nano_graphrag import GraphRAG, QueryParam
@@ -17,14 +18,17 @@ from tenacity import (
 logging.basicConfig(level=logging.WARNING)
 logging.getLogger("nano-graphrag").setLevel(logging.INFO)
 
+with open('settings.yml','r') as f:
+    settings=yaml.load(f,Loader=yaml.FullLoader)
+
 LLM_BASE_URL = "https://api.agicto.cn/v1"
-LLM_API_KEY = "sk-sYrWJZFIjyvgGQIWW2HKUcsih5S3OLMQHarq7QVs2SaTXkBr"
+LLM_API_KEY = settings['LLM_API_KEY']
 MODEL = "deepseek-v3"
 
 
 # Assumed embedding model settings
 EMBEDDING_BASE_URL = "https://api.agicto.cn/v1"
-EMBEDDING_API_KEY = "sk-sYrWJZFIjyvgGQIWW2HKUcsih5S3OLMQHarq7QVs2SaTXkBr"
+EMBEDDING_API_KEY = settings['EMBEDDING_API_KEY']
 EMBEDDING_MODEL = "text-embedding-3-small"
 EMBEDDING_MODEL_DIM = 1536
 EMBEDDING_MODEL_MAX_TOKENS = 8192
@@ -95,7 +99,7 @@ def query():
     )
     print(
         rag.query(
-            "What are the top themes in this story?", param=QueryParam(mode="global",global_max_consider_community=1024)
+            "全文主要讲了什么？", param=QueryParam(mode="global",global_max_consider_community=1024)
         )
     )
 
@@ -128,5 +132,5 @@ def insert():
 
 
 if __name__ == "__main__":
-    insert()
-    #query()
+    #insert()
+    query()
